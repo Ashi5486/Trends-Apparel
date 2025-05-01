@@ -1,14 +1,33 @@
-
 import axios from "axios";
 import { X } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 
 const base_url = import.meta.env.VITE_BASE_API_URL;
 
 const AddStyle = ({ isOpen, setIsOpen, input, setInput, setStyleList }) => {
-    const [setIsFocused] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [selectedTidno, setSelectedTidno] = useState(""); // State for selected Tidno
+    const [tidnoOptions, setTidnoOptions] = useState([]); // State to hold Tidno options
+
+    useEffect(() => {
+        const fetchTidnos = async () => {
+            try {
+                const { data } = await axios.get(`${base_url}/api/tidnos`, { withCredentials: true });
+                
+                if (Array.isArray(data)) {
+                    setTidnoOptions(data); 
+                } else {
+                    throw new Error("Invalid response from the API");
+                }
+            } catch (error) {
+                console.error("Failed to fetch Tidnos:", error);
+                toast.error("Failed to fetch Tidnos");
+            }
+        };
+
+        fetchTidnos();
+    }, []);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -21,26 +40,31 @@ const AddStyle = ({ isOpen, setIsOpen, input, setInput, setStyleList }) => {
             return;
         }
 
+        if (!selectedTidno) {
+            toast.error("Tidno is required");
+            return;
+        }
+
         try {
             setLoading(true);
             const { data } = await axios.post(
                 `${base_url}/api/styles`,
-                { StyleName: styleName, status },
+                { StyleName: styleName, status, Tidno: selectedTidno },
                 { withCredentials: true }
             );
 
-            // Add new department to the department list without clearing the search input
+            // Add new style to the style list
             setStyleList((prev) => [
                 ...prev,
-                { StyleName: styleName.toUpperCase(), status, _id: data?.id },
+                { StyleName: styleName.toUpperCase(), status, _id: data._id, Tidno: selectedTidno },
             ]);
 
-            toast.success("Styles added successfully!");
+            toast.success("Style added successfully!");
 
             setIsOpen(false); // Close the modal
         } catch (error) {
             console.error(error);
-            toast.error("Failed to add department");
+            toast.error("Failed to add style");
         } finally {
             setLoading(false);
         }
@@ -82,33 +106,35 @@ const AddStyle = ({ isOpen, setIsOpen, input, setInput, setStyleList }) => {
                             type="text"
                             name="style"
                             placeholder="Please Enter Style name"
-                            // value={input}
-                            input={input}
-                            setInput={setInput}
+                            value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            onFocus={() => setIsFocused(true)}
-                            onBlur={() => setIsFocused(false)}
-                            className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 outline-none transition-colors duration-200"
-                        />
-                    </div>
-                    <div>
-                        <label htmlFor="style" className="block text-sm font-medium text-gray-700 mb-1">
-                            Select TID NO.
-                        </label>
-                        <input
-                            type="text"
-                            name="Select Tidno"
-                            placeholder="Please Select TID NO."
-                            // value={input}
-                            input={input}
-                            setInput={setInput}
-                            onChange={(e) => setInput(e.target.value)}
-                            onFocus={() => setIsFocused(true)}
-                            onBlur={() => setIsFocused(false)}
                             className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 outline-none transition-colors duration-200"
                         />
                     </div>
 
+                    {/* Tidno Select */}
+                    <div>
+                        <label htmlFor="tidno" className="block text-sm font-medium text-gray-700 mb-1">
+                            Select Tidno
+                        </label>
+                        <select
+                            name="tidno"
+                            id="tidno"
+                            value={selectedTidno}
+                            onChange={(e) => setSelectedTidno(e.target.value)}
+                            className="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 outline-none transition-colors duration-200"
+                        >
+                            <option value="">Please Select TID NO.</option>
+                            {Array.isArray(tidnoOptions) &&
+                                tidnoOptions.map((tidno) => (
+                                    <option key={tidno._id} value={tidno._id}>
+                                        {tidno.name}
+                                    </option>
+                                ))}
+                        </select>
+                    </div>
+
+                    {/* Status Select */}
                     <div>
                         <label htmlFor="ActiveOrInactive" className="block text-sm font-medium text-gray-700 mb-1">
                             Select Status
@@ -123,6 +149,7 @@ const AddStyle = ({ isOpen, setIsOpen, input, setInput, setStyleList }) => {
                         </select>
                     </div>
 
+                    {/* Submit and Cancel Buttons */}
                     <div className="flex space-x-4 pt-2">
                         <button
                             type="submit"

@@ -1,9 +1,10 @@
-
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-// import SectionItem from './SectionItem'; // Assuming you have a SectionItem component
-import AddColor from './AddColor'; // Assuming you have an AddSection component
+// src/components/Colors/ColorsList.jsx
+import React, { useState,useEffect } from 'react';
 import { FaPlus, FaUpload, FaDownload } from 'react-icons/fa'; // Import icons
+import useFetch from '../../hooks/useFetch'; // Correct import path
+import AddColor from './AddColor'; // Assuming you have an AddColor component
+
+const base_url = import.meta.env.VITE_BASE_API_URL;
 
 const ColorList = () => {
   const [Color, setColor] = useState([]);
@@ -11,29 +12,20 @@ const ColorList = () => {
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [input, setInput] = useState('');
-  const [loading, setLoading] = useState(true);
 
-  const fetchColor = async () => {
-    try {
-      setLoading(true);
-      const res = await axios.get('http://localhost:5000/api/colors');
-      const data = Array.isArray(res.data) ? res.data : [];
-      setColor(data);
-    } catch (err) {
-      console.error('Failed to fetch TID NO.:', err.message);
-      setColor([]);
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Using the custom hook here
+  const { data, isLoading, error } = useFetch(`${base_url}/api/colors`); 
 
+  // Update color state once data is fetched
   useEffect(() => {
-    fetchColor();
-  }, []);
+    if (data) {
+      setColor(Array.isArray(data) ? data : []);
+    }
+  }, [data]);
 
-  // Filter sections based on search input
+  // Filter colors based on search input
   const filteredColor = Color.filter((Color) =>
-    Color.name.toLowerCase().includes(input.toLowerCase())
+    Color.colorName.toLowerCase().includes(input.toLowerCase())
   );
 
   const isAll = entriesPerPage === 'all';
@@ -51,8 +43,12 @@ const ColorList = () => {
     setIsOpen(true);
   };
 
-  if (loading) {
+  if (isLoading) {
     return <div className="p-4 text-center text-gray-600">Loading...</div>;
+  }
+
+  if (error) {
+    return <div className="p-4 text-center text-red-600">Error: {error.message}</div>;
   }
 
   return (
@@ -94,7 +90,7 @@ const ColorList = () => {
         <div className="flex flex-wrap gap-2 justify-end">
           <button
             className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-md text-sm"
-            onClick={handleAddTidno} // Corrected handler
+            onClick={handleAddTidno}
           >
             <FaPlus className="inline mr-1" /> Add New Color
           </button>
@@ -111,7 +107,7 @@ const ColorList = () => {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         setColor={setColor}
-        fetchColor={fetchColor}
+        fetchColor={() => {}}  // Placeholder for your fetchColor function
       />
 
       <div className="overflow-x-auto px-5">
@@ -128,12 +124,12 @@ const ColorList = () => {
           </thead>
           <tbody>
             {currentColor.length > 0 ? (
-              currentColor.map((Tidno, index) => (
+              currentColor.map((color, index) => (
                 <tr key={index}>
                   <td className="p-4">
                     <input type="checkbox" />
                   </td>
-                  <td className="p-4">{Tidno.name}</td>
+                  <td className="p-4">{color.colorName}</td>
                   <td className="p-4">
                     <button className="text-violet-500 hover:text-violet-600">Edit</button>
                     <button className="text-red-500 hover:text-red-600 ml-4">Delete</button>

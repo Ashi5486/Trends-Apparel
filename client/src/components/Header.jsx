@@ -20,7 +20,7 @@ const Header = ({ isCollapsed }) => {
 
   return (
     <header
-      className={`flex items-center ml-6 mt-2 justify-between px-3 py-1.5 bg-white shadow-md fixed top-0 z-60 transition-all duration-300 rounded-xl ${
+      className={`flex items-center ml-6 mt-2 justify-between px-8 py-1.5 bg-white shadow-md fixed top-0 z-60 transition-all duration-300 rounded-xl ${
         isCollapsed
           ? "left-24 w-[calc(100%-5rem)]"
           : "left-60 w-[calc(100%-16rem)]"
@@ -57,47 +57,3 @@ const Header = ({ isCollapsed }) => {
 };
 
 export default Header;
-
-
-// this code is written bu me and is working fine
-// import React, { useState } from "react";
-// import { useNavigate } from "react-router-dom";
-// import { User } from "lucide-react";
-// import { IoLogOutOutline } from "react-icons/io5";
-
-// const Header = () => {
-//   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-//   const navigate = useNavigate(); 
-
-//   const handleLogout = () => {
-//     navigate("/login");
-//   };
-
-//   return (
-//     <header className="flex items-center justify-between bg-white p-4 border-gray-100 shadow-xl ml-64 fixed w-[calc(100%-16rem)] top-0">
-//       <h2 className="text-xl font-semibold"></h2>
-//       <div className="relative">
-//         <button
-//           className="flex items-center p-1 mt-auto bg-gray-100 rounded-full hover:bg-gray-200"
-//           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-//         >
-//           <User className="text-indigo-500" size={26} />
-//         </button>
-
-//         {isDropdownOpen && (
-//           <div className="absolute right-0 mt-2 w-48 bg-white shadow-lg rounded-lg">
-//             <button
-//               className="flex items-center justify-center rounded gap-2 px-4 py-2 bg-red-500 text-white hover:bg-red-600 w-full"
-//               onClick={handleLogout}
-//             >
-//               Logout
-//               <IoLogOutOutline size={20} />
-//             </button>
-//           </div>
-//         )}
-//       </div>
-//     </header>
-//   );
-// };
-
-// export default Header;

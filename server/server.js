@@ -8,14 +8,16 @@ const connectDB = require("./config/db");
 
 const authRoutes = require("./routes/authRoutes");
 const departmentRouter = require("./routes/departmentRoutes");
-const protectedRoutes = require("./routes/protected");
+// const protectedRoutes = require("./routes/protected");
 const lineRouter = require("./routes/lineRoutes");
 const sectionRouter = require("./routes/sectionRoutes"); // Correct path for sectionRouter
 const tidnoRouter = require("./routes/tidnoRoutes"); // Correct path for tidnoRouter
+const styleRouter = require("./routes/styleRoutes")
 const machineRouter = require("./routes/machineRoutes")
 const sizeRouter = require("./routes/sizeRoutes")
 const machineIssueRouter = require("./routes/machineissueRoutes")
 const operationRouter = require("./routes/operationRoutes")
+const colorRouter = require("./routes/colorRoutes")
 
 dotenv.config();
 connectDB();
@@ -40,13 +42,16 @@ app.use("/api/departments", departmentRouter);
 app.use("/api/lines", lineRouter);  // Lines route
 app.use("/api/sections", sectionRouter); // Sections route
 app.use("/api/tidnos", tidnoRouter); // Tidnos route
+app.use("/api/styles",styleRouter);
 app.use("/api/machines", machineRouter);
 app.use("/api/machineissues",machineIssueRouter)
 app.use("/api/sizes",sizeRouter);
 app.use("/api/operations",operationRouter)
+app.use("/api/colors",colorRouter);
+
 // Protected routes should be added last
 // app.use("/api", protectedRoutes); 
 
-// Server setup
+
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

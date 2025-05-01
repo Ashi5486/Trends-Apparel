@@ -144,7 +144,7 @@ const GarmentList = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="3" className="text-center p-4 text-gray-500">
+                <td colSpan="5" className="text-center p-4 text-gray-500">
                   No Garment found
                 </td>
               </tr>

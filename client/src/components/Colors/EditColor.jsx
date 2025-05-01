@@ -12,7 +12,7 @@ const EditColor = ({ isEdit, setIsEdit, itemId, ColorList, setColorList }) => {
     useEffect(() => {
         const currentColor = ColorList.find(Color => Color._id === itemId);
         if (currentColor) {
-            setInput(currentColor.TidnoName); // Assuming API still uses `DepartmentName`
+            setInput(currentColor.ColorName); 
             setStatus(currentColor.status);
         }
     }, [itemId, ColorList]);
@@ -27,7 +27,7 @@ const EditColor = ({ isEdit, setIsEdit, itemId, ColorList, setColorList }) => {
         }
 
         try {
-            await axios.patch(`${base_url}/api/color/${itemId}`, {
+            await axios.patch(`${base_url}/api/colors/${itemId}`, {
                 ColorName: updatedName,
                 status
             }, {
@@ -36,7 +36,7 @@ const EditColor = ({ isEdit, setIsEdit, itemId, ColorList, setColorList }) => {
             });
 
             const updatedList = ColorList.map(color =>
-                color._id === itemId ? { ...color, TidnoName: updatedName, status } : color
+                color._id === itemId ? { ...color, colorName: updatedName, status } : color
             );
 
             setColorList(updatedList);
@@ -86,7 +86,7 @@ const EditColor = ({ isEdit, setIsEdit, itemId, ColorList, setColorList }) => {
                         <label htmlFor="tidno" className="text-sm text-gray-600">Tidno Name</label>
                         <input
                             type="text"
-                            name="tidno"
+                            name="color"
                             placeholder="Type here..."
                             value={input}
                             onChange={(e) => setInput(e.target.value)}

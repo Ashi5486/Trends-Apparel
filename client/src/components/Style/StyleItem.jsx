@@ -6,26 +6,18 @@ import toast from "react-hot-toast";
 
 const base_url = import.meta.env.VITE_BASE_API_URL;
 
-const StyleItem = ({
-  item,
-  setStyleList,
-  styleList,
-//   isChecked,
-//   onCheckboxChange,
-}) => {
+const StyleItem = ({ item, setStyleList, styleList }) => {
   const [isEdit, setIsEdit] = useState(false);
 
-  // Handle delete logic
   const handleDelete = async () => {
-    const confirmed = window.confirm(`Are you sure you want to delete "${item.DepartmentName}"?`);
+    const confirmed = window.confirm(`Are you sure you want to delete "${item.StyleName}"?`);
     if (!confirmed) return;
 
-    const id = item._id;
     try {
-      await axios.delete(`${base_url}/api/styles/${id}`, {
+      await axios.delete(`${base_url}/api/styles/${item._id}`, {
         withCredentials: true,
       });
-      const newList = styleList.filter((i) => i._id !== id);
+      const newList = styleList.filter((i) => i._id !== item._id);
       setStyleList(newList);
       toast.success("Style deleted successfully.");
     } catch (error) {
@@ -36,34 +28,21 @@ const StyleItem = ({
 
   return (
     <>
-      {/* Conditional Rendering of Edit Department Modal */}
       {isEdit && (
         <EditStyle
           isEdit={isEdit}
           setIsEdit={setIsEdit}
           itemId={item._id}
           styleList={styleList}
-          setStyleList={setStyleList}
+          setStylelist={setStyleList} // Match the casing expected by EditStyle
         />
       )}
 
       <tr className="border-b border-gray-200">
-        {/* Checkbox to select department */}
-        {/* <td className="px-3 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-          <input
-            type="checkbox"
-            checked={isChecked}
-            onChange={onCheckboxChange}
-            className="accent-violet-500"
-          />
-        </td> */}
-
-    
         <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-          {item.styleName}
+          {item.StyleName}
         </td>
 
-        {/* Department Status */}
         <td className="px-6 py-4 whitespace-nowrap">
           <span
             className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
@@ -76,10 +55,8 @@ const StyleItem = ({
           </span>
         </td>
 
-        {/* Action Buttons */}
         <td className="px-6 py-4 whitespace-nowrap text-start text-sm font-medium">
           <div className="flex justify-start space-x-3">
-            {/* Edit Button */}
             <button
               onClick={() => setIsEdit(true)}
               className="text-yellow-600 hover:text-yellow-900"
@@ -87,7 +64,6 @@ const StyleItem = ({
               <Edit3 size={18} />
             </button>
 
-            {/* Delete Button */}
             <button
               onClick={handleDelete}
               className="text-red-600 hover:text-red-900"

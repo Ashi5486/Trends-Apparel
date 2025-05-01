@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import AddTidno from './AddTidno';
-import { FaPlus, FaUpload, FaDownload, FaEdit, FaTrash } from 'react-icons/fa';
+import { Trash, Edit3 } from "lucide-react";
+import { FaPlus, FaUpload, FaDownload } from 'react-icons/fa';
 import { toast } from 'react-toastify';
 
 const base_url = import.meta.env.VITE_BASE_API_URL;
@@ -9,6 +10,7 @@ const base_url = import.meta.env.VITE_BASE_API_URL;
 const TidnoList = () => {
   const [tidnos, setTidnos] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [editTidno, setEditTidno] = useState(null);
   const [entriesPerPage, setEntriesPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [input, setInput] = useState('');
@@ -45,11 +47,22 @@ const TidnoList = () => {
   const totalPages = isAll ? 1 : Math.ceil(filteredTidnos.length / itemsPerPage);
 
   const handlePageChange = (page) => setCurrentPage(page);
-  const handleAddTidno = () => setIsOpen(true);
+  const handleAddTidno = () => {
+    setEditTidno(null);
+    setIsOpen(true);
+  };
 
-  const handleDelete = (id) => {
-    // Add your delete logic here
-    toast.info(`Delete TID NO. with ID: ${id}`);
+  const handleDelete = async (id) => {
+    if (!window.confirm("Are you sure you want to delete this TID NO.?")) return;
+
+    try {
+      await axios.delete(`${base_url}/api/tidnos/${id}`);
+      setTidnos((prev) => prev.filter((t) => t._id !== id));
+      toast.success("TID NO. deleted successfully");
+    } catch (error) {
+      console.error("Failed to delete TID NO.:", error.message);
+      toast.error("Failed to delete TID NO.");
+    }
   };
 
   if (loading) {
@@ -109,6 +122,8 @@ const TidnoList = () => {
         setIsOpen={setIsOpen}
         setTidno={setTidnos}
         fetchTidno={fetchTidno}
+        editTidno={editTidno}
+        setEditTidno={setEditTidno}
       />
 
       <div className="overflow-x-auto px-4">
@@ -132,14 +147,21 @@ const TidnoList = () => {
                   </td>
                   <td className="p-4">
                     <div className="flex gap-2">
-                      <button className="text-violet-600 hover:text-violet-800 text-sm flex items-center gap-1">
-                        <FaEdit /> Edit
+                      <button
+                        onClick={() => {
+                          setEditTidno(t);
+                          setIsOpen(true);
+                        }}
+                        className="text-orange-400 hover:text-orange-600 transition-colors duration-200"
+                      >
+                        <Edit3 size={20} />
                       </button>
+
                       <button
                         onClick={() => handleDelete(t._id)}
-                        className="text-red-600 hover:text-red-800 text-sm flex items-center gap-1"
+                        className="text-red-400 hover:text-red-600 transition-colors duration-200"
                       >
-                        <FaTrash /> Delete
+                        <Trash size={20} />
                       </button>
                     </div>
                   </td>

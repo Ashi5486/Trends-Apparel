@@ -167,7 +167,7 @@ const DepartmentList = () => {
 
       <div className="overflow-x-auto">
         <table className="min-w-full text-sm text-left border border-gray-200">
-          <thead className="bg-gray-50 text-md text-gray-600 uppercase">
+          <thead className="bg-gray-50 text-md text-gray-500 uppercase">
             <tr>
               <th className="p-4">Name</th>
               <th className="p-4">Status</th>

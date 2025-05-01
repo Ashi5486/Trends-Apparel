@@ -2,6 +2,11 @@ const mongoose = require("mongoose");
 
 const tidnoSchema = new mongoose.Schema(
   {
+    userId: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      // required: [true, "User ID is required"],
+    },
     TidnoName: {
       type: String,
       required: true,

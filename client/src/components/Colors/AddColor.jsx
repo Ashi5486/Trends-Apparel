@@ -1,4 +1,3 @@
-
 import axios from "axios";
 import { X } from "lucide-react";
 import { useState } from "react";
@@ -7,19 +6,26 @@ const base_url = import.meta.env.VITE_BASE_API_URL;
 
 const AddColor = ({ isOpen, setIsOpen, fetchColor }) => {
   const [ColorName, setColorName] = useState("");
-  const [isFocused, setIsFocused] = useState(false);
+  const [status, setStatus] = useState("Active"); // Added state for status
+  const [, setIsFocused] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!ColorName) return;
 
     try {
-      await axios.post(`${base_url}/api/colors`, { ColorName }, { withCredentials: true });
-      fetchColor();
-      setColorName("");
-      setIsOpen(false);
+      // Send the color name and status in the request
+      await axios.post(
+        `${base_url}/api/colors`,
+        { colorName: ColorName, status }, // Using proper naming for the payload
+        { withCredentials: true }
+      );
+      fetchColor(); // Re-fetch colors after adding the new color
+      setColorName(""); // Clear the color name input
+      setStatus("Active"); // Reset the status to default
+      setIsOpen(false); // Close the modal
     } catch (err) {
-      console.error("Failed to add Color:", err.message);
+      console.error(err);
     }
   };
 
@@ -50,39 +56,46 @@ const AddColor = ({ isOpen, setIsOpen, fetchColor }) => {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-5 space-y-5">
-          {/* Section Name */}
+          {/* Color Name Section */}
           <div>
             <label htmlFor="color" className="block text-sm font-medium text-gray-700 mb-1">
               Color Name
             </label>
             <input
               type="text"
-              name="Color ."
-              placeholder="Please Enter Color name."  
+              name="Color"
+              placeholder="Please Enter Color name."
               value={ColorName}
-              isFocused={isFocused}
               onChange={(e) => setColorName(e.target.value)}
               onFocus={() => setIsFocused(true)}
               onBlur={() => setIsFocused(false)}
               className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 outline-none transition-colors duration-200"
             />
           </div>
+
+          {/* Status Section */}
           <div>
-                        <label htmlFor="ActiveOrInactive" className="block text-sm font-medium text-gray-700 mb-1">
-                            Select Status
-                        </label>
-                        <select
-                            name="ActiveOrInactive"
-                            id="ActiveOrInactive"
-                            className="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 outline-none transition-colors duration-200"
-                        >
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                        </select>
-                    </div>
+            <label htmlFor="ActiveOrInactive" className="block text-sm font-medium text-gray-700 mb-1">
+              Select Status
+            </label>
+            <select
+              name="ActiveOrInactive"
+              id="ActiveOrInactive"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)} // Update the status when selection changes
+              className="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 outline-none transition-colors duration-200"
+            >
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
           {/* Buttons */}
           <div className="flex space-x-4 pt-2">
-            <button type="submit" className="bg-violet-500 hover:bg-violet-600 text-white px-6 py-2 rounded-md font-medium">
+            <button
+              type="submit"
+              className="bg-violet-500 hover:bg-violet-600 text-white px-6 py-2 rounded-md font-medium"
+            >
               Submit
             </button>
             <button

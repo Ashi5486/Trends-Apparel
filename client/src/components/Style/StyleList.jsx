@@ -16,7 +16,7 @@ const StyleList = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStyle, setSelectedStyle] = useState([]);
 
-  const { data, isLoading, error } = useFetch(`${base_url}/api/departments`);
+  const { data, isLoading, error } = useFetch(`${base_url}/api/styles`);
 
   const handleAddList = () => setIsOpen(prev => !prev);
 
@@ -26,15 +26,19 @@ const StyleList = () => {
       setStyleList(Style);
       setfilteredStyle(Style);
     }
+    console.log(data)
   }, [data]);
+  
 
   useEffect(() => {
     const filtered = StyleList.filter(style =>
       (style.StyleName || '').toLowerCase().includes(input.toLowerCase())
+  
     );
     setfilteredStyle(filtered);
     setCurrentPage(1);
   }, [input, StyleList]);
+
 
   const indexOfLast =
     entriesPerPage === 'all'
@@ -151,8 +155,8 @@ const StyleList = () => {
                 <StyleItem
                   key={item._id}
                   item={item}
-                  setDepartmentList={setStyleList}
-                  departmentList={StyleList}
+                  setStyleList={setStyleList}
+                  styleList={StyleList}
                   isChecked={selectedStyle.includes(item._id)}
                   onCheckboxChange={() => toggleSelectOne(item._id)}
                 />
@@ -160,7 +164,7 @@ const StyleList = () => {
             ) : (
               <tr>
                 <td colSpan="4" className="text-center p-4 text-gray-500">
-                  No departments found
+                  No StyleList found
                 </td>
               </tr>
             )}

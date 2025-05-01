@@ -6,6 +6,7 @@ const base_url = import.meta.env.VITE_BASE_API_URL;
 
 const AddTidno = ({ isOpen, setIsOpen, fetchTidno }) => {
   const [TidnoName, setTidnoName] = useState("");
+  const [status, setStatus] = useState("Active"); // Track the status
   const [isFocused, setIsFocused] = useState(false);
 
   const handleSubmit = async (e) => {
@@ -13,9 +14,14 @@ const AddTidno = ({ isOpen, setIsOpen, fetchTidno }) => {
     if (!TidnoName) return;
 
     try {
-      await axios.post(`${base_url}/api/tidnos`, { TidnoName,status:"Active"}, { withCredentials: true });
+      await axios.post(
+        `${base_url}/api/tidnos`,
+        { TidnoName, status },  // Send dynamic status here
+        { withCredentials: true }
+      );
       fetchTidno();
       setTidnoName("");
+      setStatus("Active");  // Reset to default status after submission
       setIsOpen(false);
     } catch (err) {
       console.error("Failed to add Tidno:", err);
@@ -66,19 +72,24 @@ const AddTidno = ({ isOpen, setIsOpen, fetchTidno }) => {
               className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 outline-none transition-colors duration-200"
             />
           </div>
+
+          {/* Status Dropdown */}
           <div>
-                        <label htmlFor="ActiveOrInactive" className="block text-sm font-medium text-gray-700 mb-1">
-                            Select Status
-                        </label>
-                        <select
-                            name="ActiveOrInactive"
-                            id="ActiveOrInactive"
-                            className="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 outline-none transition-colors duration-200"
-                        >
-                            <option value="Active">Active</option>
-                            <option value="Inactive">Inactive</option>
-                        </select>
-                    </div>
+            <label htmlFor="ActiveOrInactive" className="block text-sm font-medium text-gray-700 mb-1">
+              Select Status
+            </label>
+            <select
+              name="ActiveOrInactive"
+              id="ActiveOrInactive"
+              value={status} // Bind the value to the state
+              onChange={(e) => setStatus(e.target.value)} // Handle change
+              className="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 outline-none transition-colors duration-200"
+            >
+              <option value="Active">Active</option>
+              <option value="Inactive">Inactive</option>
+            </select>
+          </div>
+
           {/* Buttons */}
           <div className="flex space-x-4 pt-2">
             <button type="submit" className="bg-violet-500 hover:bg-violet-600 text-white px-6 py-2 rounded-md font-medium">

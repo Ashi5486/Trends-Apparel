@@ -1,4 +1,3 @@
-
 import axios from 'axios';
 import { X } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
@@ -11,10 +10,10 @@ const EditStyle = ({ isEdit, setIsEdit, itemId, styleList, setStylelist }) => {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        const currentStyle = styleList.find(dept => dept._id === itemId);
+        const currentStyle = styleList.find(style => style._id === itemId);
         if (currentStyle) {
-            setInput(currentStyle.DepartmentName);
-            setStatus(currentStyle.status);
+            setInput(currentStyle.StyleName || '');
+            setStatus(currentStyle.status || 'Active');
         }
     }, [itemId, styleList]);
 
@@ -22,20 +21,20 @@ const EditStyle = ({ isEdit, setIsEdit, itemId, styleList, setStylelist }) => {
         e.preventDefault();
         const updatedName = input.trim().toUpperCase();
 
-        // Basic validation for empty department name
         if (!updatedName) {
-            setError("Styles name can't be empty");
+            setError("Style name can't be empty.");
             return;
         }
 
         try {
-            await axios.patch(`${base_url}/api/styles/${itemId}`, {
-                StyleName: updatedName,
-                status
-            }, {
-                withCredentials: true,
-                headers: { 'Content-Type': 'application/json' }
-            });
+            await axios.patch(
+                `${base_url}/api/styles/${itemId}`,
+                { StyleName: updatedName, status },
+                {
+                    withCredentials: true,
+                    headers: { 'Content-Type': 'application/json' }
+                }
+            );
 
             const updatedList = styleList.map(style =>
                 style._id === itemId ? { ...style, StyleName: updatedName, status } : style
@@ -45,7 +44,7 @@ const EditStyle = ({ isEdit, setIsEdit, itemId, styleList, setStylelist }) => {
             setIsEdit(false);
             setInput('');
             setError(null);
-            alert("Style updated successfully!");  // Toast notification (you can replace with any custom solution)
+            alert("Style updated successfully!");
         } catch (error) {
             console.error("Error updating Style:", error);
             setError("Something went wrong. Please try again.");
@@ -68,7 +67,6 @@ const EditStyle = ({ isEdit, setIsEdit, itemId, styleList, setStylelist }) => {
                 role="dialog"
                 aria-modal="true"
             >
-                {/* Header */}
                 <div className="flex justify-between items-center p-4">
                     <h1 className="text-xl font-semibold">Edit Style</h1>
                     <button onClick={() => setIsEdit(false)} className="text-gray-500 hover:text-black">
@@ -78,44 +76,39 @@ const EditStyle = ({ isEdit, setIsEdit, itemId, styleList, setStylelist }) => {
 
                 <hr />
 
-                {/* Error Message */}
                 {error && (
-                    <div className="py-2 px-4 mb-4 bg-red-200 text-red-800 rounded-md border border-red-500">
+                    <div className="py-2 px-4 mb-4 bg-red-200 text-red-800 rounded-md border border-red-500 mx-4">
                         {error}
                     </div>
                 )}
 
-                {/* Form */}
                 <form onSubmit={handleSubmit} className="p-4 space-y-4">
-                    {/* Name */}
                     <div>
-                        <label htmlFor="department" className="text-sm text-gray-600">Department Name</label>
+                        <label htmlFor="style" className="text-sm text-gray-600">Style Name</label>
                         <input
                             type="text"
                             name="style"
                             placeholder="Type here..."
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
-                            className="w-full h-10 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                            className="w-full h-10 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
                         />
                     </div>
 
-                    {/* Status */}
                     <div>
-                        <label htmlFor="ActiveOrInactive" className="text-sm text-gray-600">Select Style</label>
+                        <label htmlFor="ActiveOrInactive" className="text-sm text-gray-600">Select Status</label>
                         <select
                             name="ActiveOrInactive"
                             id="ActiveOrInactive"
                             value={status}
                             onChange={(e) => setStatus(e.target.value)}
-                            className="w-full h-10 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
+                            className="w-full h-10 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-violet-500"
                         >
                             <option value="Active">Active</option>
                             <option value="Inactive">Inactive</option>
                         </select>
                     </div>
 
-                    {/* Submit */}
                     <button
                         type="submit"
                         className="bg-violet-500 hover:bg-violet-600 text-white px-6 py-2 rounded-md font-medium"
