@@ -27,7 +27,7 @@ const EditTidno = ({ isEdit, setIsEdit, itemId, tidnoList, setTidnoList }) => {
         }
 
         try {
-            await axios.patch(`${base_url}/api/tidno/${itemId}`, {
+            await axios.patch(`${base_url}/api/tidnos/${itemId}`, {
                 TidnoName: updatedName,
                 status
             }, {

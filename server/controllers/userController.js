@@ -53,6 +53,7 @@ const signupUser = async (req, res) => {
 // Login
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
+  console.log("email and password is coing ",email,password)
   if (!email || !password)
     return res.status(400).json({ message: 'All fields are required!' });
 

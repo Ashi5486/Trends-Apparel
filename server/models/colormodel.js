@@ -2,11 +2,11 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 const colorSchema = new Schema({
-    userId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+    // userId: {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: 'User',
     // required: [true, 'user id required'],
-    },
+    // },
     ColorName: {
         type: String,
         required: [true, 'Name is required'],

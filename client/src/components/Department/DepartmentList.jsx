@@ -72,15 +72,15 @@ const DepartmentList = () => {
     );
   };
 
-  const handleImportData = () => {
-    // Simulate the import logic here
-    toast.success("Data imported successfully!");
-  };
+  // const handleImportData = () => {
+  //   // Simulate the import logic here
+  //   toast.success("Data imported successfully!");
+  // };
 
-  const handleExportData = () => {
-    // Simulate the export logic here
-    toast.success("Data exported successfully!");
-  };
+  // const handleExportData = () => {
+  //   // Simulate the export logic here
+  //   toast.success("Data exported successfully!");
+  // };
 
   const handleAddDepartmentSuccess = (newDepartment) => {
     // Add the new department to the list and reset the search input
@@ -145,13 +145,13 @@ const DepartmentList = () => {
           </button>
           <button
             className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-md text-sm"
-            onClick={handleImportData}
+            // onClick={handleImportData}
           >
             <FaUpload className="inline mr-1" /> Import Data
           </button>
           <button
             className="bg-violet-500 hover:bg-violet-600 text-white px-4 py-2 rounded-md text-sm"
-            onClick={handleExportData}
+            // onClick={handleExportData}
           >
             <FaDownload className="inline mr-1" /> Export Data
           </button>

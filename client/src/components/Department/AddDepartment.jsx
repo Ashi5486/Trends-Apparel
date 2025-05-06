@@ -1,54 +1,73 @@
 import axios from "axios";
 import { X } from "lucide-react";
 import { useState } from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-toastify"; // Make sure toast container is used in root component
 
 const base_url = import.meta.env.VITE_BASE_API_URL;
 
 const AddDepartment = ({ isOpen, setIsOpen, setDepartmentList }) => {
   const [loading, setLoading] = useState(false);
-  const [input, setInput] = useState(""); // Department input state
+  const [input, setInput] = useState(""); // Department name
+  const [status, setStatus] = useState("Active"); // Default status
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const departmentName = e.target.department.value.trim();
-    const status = e.target.ActiveOrInactive.value;
+    const departmentName = input.trim();
 
-    // Check if department name is empty
     if (!departmentName) {
       toast.error("Department name is required");
       return;
     }
 
+    const toastId = toast.loading("Adding department...");
+
     try {
       setLoading(true);
 
-      // Make the API request to add a new department
       const { data } = await axios.post(
         `${base_url}/api/departments`,
-        { departmentName: input, status },
+        { departmentName: departmentName.toUpperCase(), status },
         { withCredentials: true }
       );
 
-      // If successful, update the department list
       if (data && data.data) {
         setDepartmentList((prev) => [
           ...prev,
-          { departmentName: departmentName.toUpperCase(), status, _id: data.data._id },
+          {
+            departmentName: departmentName.toUpperCase(),
+            status,
+            _id: data.data._id,
+          },
         ]);
 
-        // Show success toast notification
-        toast.success("Department added successfully!");
-      } else {
-        // If the response structure is unexpected, show an error toast
-        toast.error("Unexpected response data.");
-      }
+        toast.update(toastId, {
+          render: "Department added successfully!",
+          type: "success",
+          isLoading: false,
+          autoClose: 2000,
+        });
 
-      setIsOpen(false); // Close the modal after adding the department
+        // Clear input and close modal
+        setInput("");
+        setStatus("Active");
+        setIsOpen(false);
+      } else {
+        toast.update(toastId, {
+          render: "Unexpected response from server.",
+          type: "error",
+          isLoading: false,
+          autoClose: 3000,
+        });
+      }
     } catch (error) {
       console.error(error);
-      toast.error("Failed to add department");
+      toast.update(toastId, {
+        render: "Failed to add department.",
+        type: "error",
+        isLoading: false,
+        autoClose: 3000,
+      });
     } finally {
       setLoading(false);
     }
@@ -96,9 +115,9 @@ const AddDepartment = ({ isOpen, setIsOpen, setDepartmentList }) => {
               type="text"
               name="department"
               placeholder="Please enter department name"
-              value={input} // Correctly bind the input value
-              onChange={(e) => setInput(e.target.value)} // Update the input value on change
-              className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 cursor-pointer outline-none transition-colors duration-200"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              className="w-full h-10 px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 outline-none"
             />
           </div>
 
@@ -112,7 +131,9 @@ const AddDepartment = ({ isOpen, setIsOpen, setDepartmentList }) => {
             <select
               name="ActiveOrInactive"
               id="ActiveOrInactive"
-              className="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 cursor-pointer outline-none transition-colors duration-200"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+              className="w-full h-10 px-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-violet-500 outline-none"
             >
               <option value="Active">Active</option>
               <option value="Inactive">Inactive</option>
@@ -125,7 +146,7 @@ const AddDepartment = ({ isOpen, setIsOpen, setDepartmentList }) => {
               disabled={loading}
               className={`${
                 loading ? "bg-violet-400" : "bg-violet-500 hover:bg-violet-600"
-              } text-white px-6 py-2 rounded-md font-medium flex items-center justify-center border-none`}
+              } text-white px-6 py-2 rounded-md font-medium`}
             >
               {loading ? "Submitting..." : "Submit"}
             </button>

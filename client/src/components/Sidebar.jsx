@@ -2,65 +2,7 @@ import React, { useState } from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { ChevronDown, ChevronRight, Menu as MenuIcon } from "lucide-react";
 import { sidebarData } from "/lib/SidebarOptions";
-// import Dashboard from "../pages/Admin/Dashboard";
 
-
-// This code for when we use the chervon button click then it will open the sub menu
-
-// const SidebarItem = ({ item, level = 0, isCollapsed }) => {
-//   const [isOpen, setIsOpen] = useState(false);
-//   const location = useLocation();
-//   const hasChildren = item.options?.length > 0;
-//   const IconComponent = item.icon;
-
-//   const isActive =
-//     item.path === location.pathname ||
-//     (hasChildren && item.options.some((child) => child.path === location.pathname));
-
-//   return (
-//     <div className={`${level > 0 ? "ml-4" : ""}`}>
-//       <div
-//         className={`flex items-center justify-between px-2 py-2 rounded-md transition-colors duration-150 ${
-//           isActive
-//             ? "bg-violet-500 text-white font-semibold"
-//             : "text-gray-800 hover:bg-gray-200"
-//         }`}
-//       >
-//         <NavLink
-//           to={item.path || "#"}
-//           className="flex items-center flex-1 space-x-2 w-full"
-//         >
-//           {IconComponent && (
-//             <IconComponent size={22} className="shrink-0 min-w-[22px]" />
-//           )}
-//           {!isCollapsed && <span className="truncate">{item.name}</span>}
-//         </NavLink>
-
-//         {hasChildren && !isCollapsed && (
-//           <button
-//             onClick={() => setIsOpen(!isOpen)}
-//             className="p-1 hover:bg-gray-300 rounded"
-//           >
-//             {isOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
-//           </button>
-//         )}
-//       </div>
-
-//       {hasChildren && isOpen && !isCollapsed && (
-//         <div className="mt-1 space-y-1">
-//           {item.options.map((child) => (
-//             <SidebarItem
-//               key={child.id}
-//               item={child}
-//               level={level + 1}
-//               isCollapsed={isCollapsed}
-//             />
-//           ))}
-//         </div>
-//       )}
-//     </div>
-//   );
-// };
 const SidebarItem = ({ item, level = 0, isCollapsed }) => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
@@ -134,7 +76,7 @@ const Sidebar = () => {
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="p-2 rounded-md hover:bg-gray-200"
         >
-          <MenuIcon size={20} />
+          <MenuIcon size={22} />
         </button>
       </div>
 

@@ -40,7 +40,7 @@ const TidnoItem = ({ line, Tidno, setTidno }) => {
 
   // Toggle status between Active and Inactive
   const handleToggleStatus = async () => {
-    const newStatus = Tidno.gistatus === "Active" ? "Inactive" : "Active";
+    const newStatus = Tidno.status === "Active" ? "Inactive" : "Active";
     try {
       // Update the Tidno status in the database
       await axios.patch(`${base_url}/api/tidnos/${Tidno._id}`, { status: newStatus });

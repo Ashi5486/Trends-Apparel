@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { X } from 'lucide-react';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
 
 const base_url = import.meta.env.VITE_BASE_API_URL;
@@ -8,14 +8,19 @@ const base_url = import.meta.env.VITE_BASE_API_URL;
 const EditDepartment = ({ isEdit, setIsEdit, itemId, departmentList, setDepartmentList }) => {
     const [input, setInput] = useState('');
     const [status, setStatus] = useState('Active');
+    const inputRef = useRef(null);
 
     useEffect(() => {
-        const currentDepartment = departmentList.find(dept => dept._id === itemId);
-        if (currentDepartment) {
-            setInput(currentDepartment.DepartmentName);
-            setStatus(currentDepartment.status);
+        if (isEdit) {
+            const currentDepartment = departmentList.find(dept => dept._id === itemId);
+            if (currentDepartment) {
+                setInput(currentDepartment.departmentName); // fixed casing here
+                setStatus(currentDepartment.status);
+                // Delay focus slightly to ensure modal is rendered
+                setTimeout(() => inputRef.current?.focus(), 100);
+            }
         }
-    }, [itemId, departmentList]);
+    }, [isEdit, itemId, departmentList]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -98,6 +103,7 @@ const EditDepartment = ({ isEdit, setIsEdit, itemId, departmentList, setDepartme
                             placeholder="Type here..."
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
+                            ref={inputRef}
                             className="w-full h-10 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                         />
                     </div>
